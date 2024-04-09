@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="https://lib.baomitu.com/jquery/2.2.4/jquery.js"></script>
+    <script src="./utils/setCanvas.js"></script>
+    <style>
+        .btn {
+            color: #33333372;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        var key = 'QEQBZ-AB73Q-SI557-2ET4U-HGDCK-R4BHP'
+        var url = `https://apis.map.qq.com/ws/location/v1/ip?key=${key}&output=jsonp`
+        $.ajax({
+            url,
+            dataType: "jsonp",
+            success: res => {
+                var adcode = res.result.ad_info.adcode
+                var location = res.result.location;
+                var url = `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`
+                /* 执行飞行视角-飞行ip所在的位置 */
+                console.log(location)
+                var { lat, lng } = location;
+                const canvas = setCanvas(map);
+                const city_style = new ol.style.Style({
+                    image: new ol.style.Icon({
+                        img: canvas,
+                        imgSize: [canvas.width, canvas.height]
+                    })
+                })
+                const city_feature = new ol.Feature({
+                    geometry: new ol.geom.Point([lng, lat])
+                })
+                const city_source = new ol.source.Vector({
+                    features: [city_feature]
+                })
+                const city_layer = new ol.layer.Vector({
+                    source: city_source,
+                    style: city_style
+                })
+                map.addLayer(city_layer)
+                /* 定时器 */
+                const style = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: "#ff2d51",
+                        width: 2
+                    }),
+                    fill: new ol.style.Fill({
+                        color: "#33333372"
+                    })
+                })
+                var source = new ol.source.Vector({
+                    url,
+                    format: new ol.format.GeoJSON()
+                })
+                var layer = new ol.layer.Vector({
+                    source,
+                    style
+                })
+                map.addLayer(layer);
+                city_layer.setZIndex(100)
+                setTimeout(() => {
+                    map.getView().animate({
+                        center: [lng, lat],
+                        zoom: 10
+                    })
+                    /* 加载geojson数据 */
+                }, 1000)
+
+                /* 在中心点设置canvas-ol */
+
+            }
+        })
+    </script>
+</body>
+
+</html>

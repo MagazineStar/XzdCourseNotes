@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="activeDraw()">激活画笔</button>
+    <button onclick="removeDraw()">移除画笔</button>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 1、设置画布 */
+        const source = new ol.source.Vector({})
+        const layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer);
+        let draw;
+        function activeDraw() {
+            draw = new ol.interaction.Draw({
+                type: "Point",
+                source
+            })
+            map.addInteraction(draw);
+            // console.log(draw)
+            /* 监听画笔 */
+            draw.on("drawend", evt => {
+                console.log(evt)
+                /* evt.feature实际上就是openlayer的要素 */
+                var geometry = evt.feature.getGeometry().getCoordinates();
+                console.log(geometry)
+            })
+        }
+        function removeDraw() {
+            map.removeInteraction(draw);
+        }
+    </script>
+</body>
+
+</html>

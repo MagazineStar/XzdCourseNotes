@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 1、导入依赖 -->
+    <link rel="stylesheet" href="https://lib.baomitu.com/leaflet/1.9.3/leaflet.css">
+    <script src="https://lib.baomitu.com/leaflet/1.9.3/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #clear {
+            position: fixed;
+            z-index: 1000;
+            top: 20px;
+            right: 20px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="clear">删除所有的标注</button>
+    <div id="map">
+
+    </div>
+    <script>
+        /* 实例化地图 */
+        const map = L.map("map").setView([30.50, 114.30], 13)
+        /* 加载mapbox的图层 */
+        var url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hlbmdiZW5jaGFvIiwiYSI6ImNsODU3aGRiODA0Y2UzcHBzZmFlcmdqZ2sifQ.8k59W_pB_Riwe6o-MneRlA'
+        var layer = L.tileLayer(url, {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        })
+        layer.addTo(map);
+        /* 创建一个图层管理工具 管理所有的图层 */
+        var layerGroups = new L.FeatureGroup().addTo(map);
+        console.log(layerGroups)
+        map.on("click", evt => {
+            var latlng = evt.latlng;
+            var marker = L.marker(latlng)
+            layerGroups.addLayer(marker);
+
+        })
+        var markerClear = document.getElementById("clear");
+        markerClear.onclick = function () {
+            /* 删除图层容器中的所有图层 */
+            layerGroups.clearLayers();
+        }
+    </script>
+</body>
+
+</html>

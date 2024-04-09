@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 1、导入依赖 -->
+    <link rel="stylesheet" href="https://lib.baomitu.com/leaflet/1.9.3/leaflet.css">
+    <script src="https://lib.baomitu.com/leaflet/1.9.3/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+
+    </div>
+    <script>
+        /* 实例化地图 */
+        const map = L.map("map").setView([30.50, 114.30], 13)
+        /* 加载mapbox的图层 */
+        var url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hlbmdiZW5jaGFvIiwiYSI6ImNsODU3aGRiODA0Y2UzcHBzZmFlcmdqZ2sifQ.8k59W_pB_Riwe6o-MneRlA'
+        var layer = L.tileLayer(url, {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        })
+        layer.addTo(map);
+        /* map.on(event,callback)给地图绑定点击事件 */
+        map.on("click", evt => {
+            var latlng = evt.latlng;
+            /* L.marker中的参数
+            1、传递数据[30.50,114.40]
+            2、传递对象{lat:30.50,lat:114.40}
+             */
+            var marker = L.marker(latlng)
+            // marker.addTo(map);
+            // console.log(map)
+            map.addLayer(marker);
+           
+        })
+    </script>
+</body>
+
+</html>

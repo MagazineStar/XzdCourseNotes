@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .ol-custom-overviewmap {
+            /* position: fixed; */
+            right: 0;
+            bottom: 0;
+            top: auto;
+            left: auto;
+        }
+
+        .ol-overviewmap-box {
+            border: 1px solid #ff2d51;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+
+    </div>
+    <script>
+        var gaode = new ol.layer.Tile({
+            title: "高德地图",
+            source: new ol.source.XYZ({
+                url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}',
+                wrapX: false
+            })
+        });
+
+        var map = new ol.Map({
+            target: "map",
+            // layers:[gaode],
+            layers: [],
+            view: new ol.View({
+                center: [114.30, 30.50],
+                zoom: 4,
+                projection: "EPSG:4326"
+            })
+        })
+        /* addLayer */
+        map.addLayer(gaode)
+        /* 添加控件 */
+        var scaleLineControl = new ol.control.ScaleLine({
+            //设置比例尺单位，degrees、imperial、us、nautical、metric（度量单位）
+            units: "metric"
+        });
+        map.addControl(scaleLineControl)
+        const overviewMapControl = new ol.control.OverviewMap({
+            /* 鹰眼控件样式  */
+            className: 'ol-overviewmap ol-custom-overviewmap',
+            layers: [gaode],
+            /* 鹰眼控件展开时功能按钮上的标识(网页的JS的字符编码) */
+            collapseLabel: '\u00BB',
+            /* 鹰眼控件折叠时功能按钮上的标识(网页的JS的字符编码) */
+            label: '\u00AB',
+            /* 初始为展开显示方式 */
+            collapsed: false,
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                minZoom: 8,
+                maxZoom: 18
+            })
+        })
+        map.addControl(overviewMapControl)
+        var fullScreen = new ol.control.FullScreen();
+        map.addControl(fullScreen);
+    </script>
+</body>
+
+</html>

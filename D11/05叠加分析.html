@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="overAnalysis()">叠加分析</button>
+    <div id="map_container">
+    </div>
+    <script>
+        /* 模拟居民区 */
+        const vectorData = 'gdbp://MapGISLocalPlus/xzd2301/sfcls/居民区'
+        const vecLayer = new Zondy.Map.GdbpLayer(
+            '',
+            [vectorData], {
+            ip: 'localhost',
+            port: '6163'
+        }
+        )
+        var map = new ol.Map({
+            target: "map_container",
+            layers: [gaode, vecLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+
+        /* 叠加分析 */
+        let resultname;
+        function overAnalysis() {
+            //模拟商圈
+            const geoRegion = new Zondy.Object.GRegion(
+                [
+                    new Zondy.Object.AnyLine([
+                        new Zondy.Object.Arc(
+                            [
+                                new Zondy.Object.Point2D(100, 33),
+                                new Zondy.Object.Point2D(100, 22),
+                                new Zondy.Object.Point2D(115, 22),
+                                new Zondy.Object.Point2D(115, 33),
+                                new Zondy.Object.Point2D(190, 33)
+                            ],
+                            0
+                        )
+                    ])
+                ],
+                0
+            )
+            /* 在mapgis数据库中给比较结果新的值 */
+            resultname = vectorData + Date.now().toString().slice(0, 8);
+            //创建叠加分析服务
+            var overlayParam = new Zondy.Service.OverlayByPolygon({
+                ip: 'localhost',
+                port: '6163', //访问IGServer的端口号，.net版为6163，Java版为8089,
+                //设置被叠加图层URL  居民区
+                srcInfo1: vectorData,
+                //设置结果URL  比较结果
+                desInfo: resultname,
+                //设置多边形坐标序列化对象  商圈
+                strGRegionXML: JSON.stringify(geoRegion),
+                //多边形字符串输入格式
+                inFormat: 'json',
+                //设置结果图层的图形参数信息
+                infoOptType: 2,
+                //求交
+                overType: 1,
+                //允许重算面积
+                isReCalculate: true,
+                //容差半径
+                radius: 0.05,
+            })
+            //2.3 执行叠加分析
+            //调用基类的execute方法,执行叠加分析,onSuccess为结果回调函数
+            overlayParam.execute(
+                onSuccess,
+                'post',
+                false,
+                'json',
+                onError
+            )
+        }
+        //2-4、分析结果显示到地图容器上
+        function onSuccess(result) {
+            console.log(result)
+            if (result.succeed) {
+                console.log(resultname)
+                const resultLayer = new Zondy.Map.GdbpLayer('', [resultname], {
+                    ip: 'localhost',
+                    port: '6163'
+                })
+                map.addLayer(resultLayer)
+            }
+        }
+        function onError(err) {
+            console.log(err)
+        }
+        /*
+        1、确定老的图层
+        2、确定新的区域
+        3、调用中地叠加分析服务结果结果 
+         */
+    </script>
+</body>
+
+</html>

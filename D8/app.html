@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var arr = ["html", "css", "js"];
+        for (let key in arr) {
+            console.log(key)
+        }
+        for (let val of arr) {
+            console.log(val);
+        }
+        var attr = [
+            { type: "string", key: "name", value: "xzd" },
+            { type: "int", key: "length", value: 1000 },
+        ]
+        // var values = ['xzd', 1000]
+        var values = attr.map(item=>item.value);
+        console.log(values);
+    </script>
+</body>
+
+</html>

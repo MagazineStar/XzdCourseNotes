@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 创建画布 */
+        const source = new ol.source.Vector({
+
+        })
+        const layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer);
+        /* 创建画笔 */
+        /* 正方形是基于圆构建的 */
+        let draw = new ol.interaction.Draw({
+            source: source,
+            // 绘制的类型
+            type: 'LineString',
+            geometryFunction: function (coordinates, geometry) {
+                if (!geometry) {
+                    //多边形
+                    geometry = new ol.geom.Polygon(null)
+                }
+                var start = coordinates[0]
+                var end = coordinates[1]
+                geometry.setCoordinates([
+                    [start, [start[0], end[1]], end, [end[0], start[1]], start],
+                ])
+                return geometry
+            },
+            maxPoints: 2
+        })
+        /* 激活画笔  */
+        map.addInteraction(draw);
+    </script>
+</body>
+
+</html>

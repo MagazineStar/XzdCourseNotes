@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="https://lib.baomitu.com/jquery/2.2.4/jquery.js"></script>
+    <script src="https://lib.baomitu.com/vue/2.7.7/vue.js"></script>
+</head>
+
+<body>
+    <button onclick="activeClick()">激活点击事件</button>
+    <button onclick="unClick()">解绑点击事件</button>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        function activeClick() {
+            map.on("click", handleMap)
+        }
+        function unClick() {
+            map.un("click", handleMap)
+        }
+        function handleMap(evt) {
+            console.log(evt.coordinate)
+        }
+    </script>
+</body>
+
+</html>

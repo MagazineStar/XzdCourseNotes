@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 标注是基于点要素区构建的  layer */
+        const point_text = new ol.Feature({
+            geometry: new ol.geom.Point([114.30, 30.50]),
+        })
+        // 二、 通过Style类创建txt
+        const txt_style = new ol.style.Style({
+            text: new ol.style.Text({
+                offsetX: 0,
+                offsetY: -10,
+                font: 'normal 12px 微软雅黑',
+                text: '武汉市',
+                fill: new ol.style.Fill({ color: '#333' }),
+                stroke: new ol.style.Stroke({ color: "#ff2d51", width: 2 })
+            }),
+            image: new ol.style.Icon({
+                anchor: [0.5, 2],
+                anchorOrigin: 'top-right',
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                offsetOrigin: 'top-right',
+                // offset:[0,20],
+                //图标缩放比例
+                scale: 1,
+                //透明度
+                opacity: 0.75,
+                //图标的url
+                src: './images/location.png',
+            }),
+        })
+
+        point_text.setStyle(txt_style)
+        /* 三、创建矢量数据 */
+        const source = new ol.source.Vector({
+            features: [point_text],
+            wrapX: false
+        })
+        const layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer);
+    </script>
+</body>
+
+</html>

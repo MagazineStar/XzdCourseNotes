@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*  */
+        class Person {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            sayName() {
+                console.log(this.name)
+            }
+        }
+        /* Student skill */
+        class Student extends Person {
+
+            constructor(name, age, skill) {
+                /* super指父类,相当于调用了父类的构造函数 */
+                super(name, age);
+                this.skill = skill;
+            }
+            /* 类的方法中调用方法 */
+            fun() {
+                /* super指父类 */
+                super.sayName();
+                this.sayName();
+            }
+        }
+        var li = new Student("李四", 20, 'WEBGIS');
+        /* 实例化子类,调动子类的构造函数,父类的构造函数 */
+        li.fun();        
+    </script>
+</body>
+
+</html>

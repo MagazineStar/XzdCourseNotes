@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="200" height="200"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        /* 第一个圆 */
+        ctx.beginPath();
+        ctx.arc(100, 100, 40, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = "#ff2d51";
+        ctx.fill();
+        /* 第二个圆 */
+        ctx.beginPath();
+        ctx.arc(100, 100, 30, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = "#333";
+        ctx.fill();
+    </script>
+</body>
+
+</html>

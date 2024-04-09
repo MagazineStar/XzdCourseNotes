@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="updatePoint()">修改点要素</button>
+    <div id="map">
+    </div>
+    <script>
+        /* 
+        1、name  新中地
+        2、坐标 120,40
+         */
+        var docLayer = new Zondy.Map.Doc("", "xzd_up", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        function updatePoint() {
+            // put
+            /* 确定修改位置 */
+            // debugger;
+            var gpoint = new Zondy.Object.GPoint(120, 40);
+            var fGeom = new Zondy.Object.FeatureGeometry({ PntGeom: [gpoint] });
+            var pointInfo = new Zondy.Object.CPointInfo({
+                Angle: 0,
+                Color: 16,
+                Space: 0,
+                SymHeight: 5,
+                SymID: 30,
+                SymWidth: 5
+            });
+            //设置当前点要素的图形参数信息
+            var webGraphicInfo = new Zondy.Object.WebGraphicsInfo({
+                InfoType: 1,
+                PntInfo: pointInfo
+            });
+            /* 属性 */
+            var attValue = ['北京'];
+            //创建一个点要素
+            var newFeature = new Zondy.Object.Feature({ fGeom: fGeom, GraphicInfo: webGraphicInfo, AttValue: attValue });
+            //设置要素为点要素
+            newFeature.setFType(1);
+            var featureId = 1;
+            newFeature.setFID(featureId);//++
+            /* 要素集 */
+            var featureSet = new Zondy.Object.FeatureSet();
+            // featureSet.clear();
+            //设置属性结构
+            var cAttStruct = new Zondy.Object.CAttStruct({
+                FldName: ["name"],
+                FldNumber: 1,
+                FldType: ["string"]
+            });
+            featureSet.AttStruct = cAttStruct;
+            //添加要素到要素数据集
+            featureSet.addFeature(newFeature);
+            /* 调用中地服务 */
+            var editService = new Zondy.Service.EditDocFeature("xzd_up", 4, {
+
+            });
+            editService.update(featureSet, onPntSuccess);
+
+        }
+        function onPntSuccess(data) {
+            if (data.succeed) {
+                alert("修改点要素成功！");
+                docLayer.refresh();
+            } else {
+                alert("修改点要素失败！");
+            }
+        }
+    </script>
+</body>
+
+</html>

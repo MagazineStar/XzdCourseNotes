@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="addMap()">放大地图</button>
+    <button onclick="reduceMap()">缩小地图</button>
+    <button onclick="resetMap()">复位地图</button>
+    <button onclick="moveTo()">平移到零度经线</button>
+    <div id="map">
+
+    </div>
+    <script>
+        const map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                center: [114.30, 30.50],
+                zoom: 4,
+                projection: 'EPSG:4326'
+            })
+        })
+        const view = map.getView();
+        const zoom = view.getZoom();
+        const center = view.getCenter();
+        console.log(zoom);
+        /* getZoom获取缩放级别  setZoom可以设置缩放级别 */
+        function addMap() {
+            let zoom = view.getZoom();
+            view.setZoom(zoom + 1);
+        }
+        function reduceMap() {
+            let zoom = view.getZoom();
+            view.setZoom(zoom - 1)
+        }
+        function resetMap(){
+            view.setZoom(zoom);
+            view.setCenter(center);
+        }
+        function moveTo(){
+            view.setCenter([0,30])
+        }
+    </script>
+</body>
+
+</html>

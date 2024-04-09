@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绘制圆</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="200" height="200"></canvas>
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        /* 设置开始路径 */
+        ctx.beginPath();
+        /* 第一个参数和第二个参数,设置圆的中心点 */
+        /* 第三个参数设置半径 */
+        /* 第四个参数和第五个参数 设置开始和结束的弧度 */
+        /* ctx.arc(x,y,radius,startAngle,endAngle) */
+        ctx.arc(50, 50, 40, 0, Math.PI * 2)
+        ctx.closePath();
+        ctx.stroke();
+    </script>
+</body>
+
+</html>

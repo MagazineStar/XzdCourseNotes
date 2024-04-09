@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* js中所有定义的全局变量和方法都是window的成员 */
+        var name = "webgis";
+        function fun() {
+            console.log(this.name);
+        }
+        fun()
+        // this.fun();
+        //window.fun();
+        // console.log(window)
+        console.log(this);
+    </script>
+</body>
+
+</html>

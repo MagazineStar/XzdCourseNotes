@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+
+    </div>
+    <script>
+        const map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                center: [114.30, 30.50],
+                zoom: 10,
+                projection: "EPSG:4326"
+            })
+        })
+        /*
+        Feature,Source,Layer,Map
+        Feature= geometry+style
+         */
+        /* 1、创建一个要素,设置要素的几何信息 */
+        const point = new ol.Feature({
+            geometry: new ol.geom.Point([114.30, 30.50])
+        })
+        const point1 = new ol.Feature({
+            geometry: new ol.geom.Point([114.40, 30.40])
+        })
+        /* 样式 */
+        const style = new ol.style.Style({
+            image: new ol.style.Circle({
+                /* 半径 */
+                radius: 17,
+                /* fill属性是必选项 */
+                fill: new ol.style.Fill({
+                    color: "red"
+                }),
+                stroke: new ol.style.Stroke({
+                    width: 2,
+                    color: "#333"
+                })
+            })
+        })
+        /* 2、设置source 矢量数据源 */
+        const source = new ol.source.Vector({
+            features: [point, point1]
+        })
+        /* 3、设置矢量图层layer */
+        const layer = new ol.layer.Vector({
+            source,
+            style
+        })
+
+        // console.log(layer.hasOwnProperty("style"))
+        //证明style不是私有属性
+        // layer.setStyle(style)
+        /* 4、将图层添加到地图容器 */
+        map.addLayer(layer)
+    </script>
+</body>
+
+</html>

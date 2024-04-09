@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 1、定义一个canvas的标签  画布 -->
+    <canvas id="canvas" width="200" height="200"></canvas>
+    <script>
+        /* 1-1、获取canvas元素 */
+        const canvas = document.getElementById("canvas");
+        /* 1-2、获取绘制上下文 */
+        const ctx = canvas.getContext("2d");
+        /* 1-3、执行绘制 */
+        ctx.fillStyle = "#652e80";
+        /* 第一个参数和第二个参数 是绘制的起点
+        第三个参数 width  第四个参数height
+         */
+        ctx.fillRect(10, 0, 150, 100)
+    </script>
+</body>
+
+</html>

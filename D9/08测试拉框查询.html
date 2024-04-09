@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="./utils/Query.js"></script>
+    <script src="./utils/createDraw.js"></script>
+    <script src="./utils/setCanvas.js"></script>
+</head>
+
+<body>
+    <button onclick="queryByDraw()">拉框查询</button>
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "dir", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        const source = new ol.source.Vector({})
+        const layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer);
+        let draw = null;
+        function queryByDraw() {
+            draw = createDraw({
+                type: "Box",
+                source,
+                callback: handleDraw
+            })
+            map.addInteraction(draw);
+        }
+        let canvas = setCanvas(map);
+        const hight_style = new ol.style.Style({
+            image: new ol.style.Icon({
+                img: canvas,
+                imgSize: [canvas.width, canvas.height]
+            })
+        })
+        var high_source = new ol.source.Vector({});
+        var high_layer = new ol.layer.Vector({
+            source: high_source,
+            style: hight_style
+        })
+        map.addLayer(high_layer);
+        function handleDraw(feature) {
+            map.removeInteraction(draw);
+            high_source.clear();
+            source.clear();
+            var service = {
+                name: "dir",
+                layerId: 2
+            }
+            Query.queryByGeom({
+                feature,
+                service,
+                callback: res => {
+                    console.log(res);
+                    high_source.addFeatures(res);
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

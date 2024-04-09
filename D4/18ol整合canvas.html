@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* canvas作为样式设置给feature */
+        /* 设置空的图层 */
+        const source = new ol.source.Vector({});
+        const layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer);
+        /* 设置canvas */
+        /* 初始化canvas */
+        let size = 100;
+        let canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        let radius = size / 4;
+        /* 执行绘制 */
+        let ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = "#652e80";
+        ctx.fill();
+        /* 将canvas作为样式设置 */
+        const style = new ol.style.Style({
+            image: new ol.style.Icon({
+                img: canvas,
+                imgSize: [canvas.width, canvas.height]
+            })
+        })
+
+        /* 设置要素 */
+        var point = new ol.Feature({
+            geometry: new ol.geom.Point([114.30, 30.50])
+        })
+        source.addFeature(point);
+        layer.setStyle(style);
+        
+    </script>
+</body>
+
+</html>

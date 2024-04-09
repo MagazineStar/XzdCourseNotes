@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="https://lib.baomitu.com/jquery/2.2.4/jquery.js"></script>
+    <style>
+        #popup {
+            width: 200px;
+            height: 50px;
+            border: 1px solid #666;
+            border-radius: 30px;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 200;
+            background-color: #fff;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="popup">
+        <button id="close">x</button>
+    </div>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 设置一个元素 */
+        const icon_style = new ol.style.Style({
+            /**{olx.style.IconOptions}类型*/
+            image: new ol.style.Icon({
+                anchor: [0.5, 0.5],
+                anchorOrigin: 'top-right',
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                offsetOrigin: 'top-right',
+                // offset:[0,10],
+                //图标缩放比例
+                scale: 1,
+                //透明度
+                opacity: 0.75,
+                //图标的url
+                src: './images/location.png',
+            }),
+        })
+        var marker = new ol.Feature({
+            geometry: new ol.geom.Point([114.30, 30.50])
+        })
+        marker.setStyle(icon_style);
+        /* source-layer-map */
+        var source = new ol.source.Vector({
+            features: [marker]
+        })
+        var layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer)
+
+
+        /* 给地图绑定事件  */
+        /* 1、鼠标放置到元素上显示抓手 */
+        map.on('pointermove', function (e) {
+            var pixel = map.getEventPixel(e.originalEvent);
+            var hit = map.hasFeatureAtPixel(pixel);
+            map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        });
+
+        map.on('click', function (e) {
+            // 获取当前点击的点是否存在要素, 并返回
+            const feature = map.forEachFeatureAtPixel(
+                //
+                e.pixel,
+                function (feature, layer) {
+                    return feature
+                }
+            )
+            console.log(feature)
+            if (feature) {
+                var position = feature.getGeometry().flatCoordinates
+                var pixel = map.getPixelFromCoordinate(position);
+                console.log(pixel)
+                /* 放置元素到页面对应的位置 */
+                $("#popup").show(500).css({left:pixel[0]+"px",top:pixel[1]-20+"px"})
+
+            }
+        })
+        $("#close").click(function(){
+            $("#popup").hide(500)
+        })
+    </script>
+</body>
+
+</html>

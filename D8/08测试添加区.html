@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="./utils/createDraw.js"></script>
+    <script src="./utils/Area.js"></script>
+</head>
+
+<body>
+    <button onclick="activeDraw()">激活画笔-添加区</button>
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "xzd_area", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 创建空的画布 */
+        var source = new ol.source.Vector({})
+        var layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer);
+        /* 通过画笔获取坐标 */
+        let draw = null;
+        function activeDraw() {
+            draw = createDraw({
+                type: "Polygon",
+                source,
+                callback: handleDraw
+            })
+            map.addInteraction(draw);
+        }
+        function handleDraw(evt) {
+            var position = evt.feature.getGeometry().getCoordinates()[0];
+            var service = {
+                name: "xzd_area",
+                layerId: 0
+            }
+            var attr = [
+                // { type: "string", name: "name", value: "科技园" }
+            ]
+            Area.add({
+                position,
+                attr,
+                service,
+                docLayer
+            })
+            map.removeInteraction(draw);
+            source.clear();
+        }
+    </script>
+</body>
+
+</html>

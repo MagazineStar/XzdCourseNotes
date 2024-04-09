@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 1、导入依赖 -->
+    <link rel="stylesheet" href="https://lib.baomitu.com/leaflet/1.9.3/leaflet.css">
+    <script src="https://lib.baomitu.com/leaflet/1.9.3/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+
+    </div>
+    <script>
+        /* 实例化地图 */
+        const map = L.map("map").setView([30.50, 114.30], 13)
+        /* 加载mapbox的图层 */
+        var url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        var layer = L.tileLayer(url, {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        })
+        layer.addTo(map);
+        // var geoLayer = L.geoJSON('./data/420115.geoJson')
+        // map.addLayer(geoLayer)
+        var geojson = {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    properties: {
+                        name: "武汉"
+                    },
+                    geometry: {
+                        type: "Point",
+                        coordinates: [114.30, 30.50]
+                    }
+                }
+            ]
+        }
+        var pointLayer = L.geoJSON(geojson);
+        map.addLayer(pointLayer)
+        fetch("./data/420115.geoJson",{
+            mode: 'no-cors'
+        }).then(res => res.json()).then(data => {
+            // console.log(data);
+            var jiangxia = L.geoJSON(data);
+            map.addLayer(jiangxia)
+        })
+        map.on("click", () => {
+            console.log(map._layers)
+            var layers = map._layers;
+            for(let layer in layers){
+                console.log(layer)
+                if(layer>38){
+                    console.log(layer)
+                    map.removeLayer(layers[layer]);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="multiBuffAnalysis()">多圈缓冲区分析</button>
+    <div id="map">
+    </div>
+    <script>
+        var vectorData = 'gdbp://MapGISLocalPlus/xzd2301/sfcls/长江'
+        const vecLayer = new Zondy.Map.GdbpLayer(
+            '',
+            [vectorData], {
+            ip: 'localhost',
+            port: 6163
+        }
+        )
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, vecLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        let resultName = null;
+
+        function multiBuffAnalysis() {
+            resultName = vectorData + Date.now()
+            /* 1、调用中地服务创建分析对象 */
+            var clsBufByMR = new Zondy.Service.ClassBufferByMultiplyRing({
+                ip: 'localhost',
+                port: '6163',
+                //设置多圈缓冲区的半径
+                radiuStr: '0.01,0.05,0.1'
+            })
+            /* 2、设置分析参数 */
+            clsBufByMR.srcInfo = vectorData
+            clsBufByMR.desInfo = resultName
+            /* 3、执行分析 */
+            clsBufByMR.execute(
+                onSuccess,
+                'post',
+                false,
+                'json'
+            )
+        }
+
+        function onSuccess(result) {
+            console.log(result)
+            if (result.succeed) {
+                const resultLayer = new Zondy.Map.GdbpLayer('', [resultName], {
+                    ip: 'localhost',
+                    port: 6163
+                })
+                map.addLayer(resultLayer)
+            }
+        }
+    </script>
+</body>
+
+</html>

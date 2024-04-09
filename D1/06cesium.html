@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Include the CesiumJS JavaScript and CSS files -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.98/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.98/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+    <script>
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1YjQ2YWMwNS04NzMzLTQ0Y2ItOWEzNS1jMzYwNWMxYTY2YmIiLCJpZCI6ODcyNjAsImlhdCI6MTY0ODQzOTMzMn0.dNFYC8X3Q0qaxhNdop6gN2pOfQuM6rY_xiTH_gmu1Jw';
+        const esri = new Cesium.ArcGisMapServerImageryProvider({
+            url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+        })
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+            baseLayerPicker: false,
+            imageryProvider: esri,
+        })
+        viewer.scene.globe.enableLighting = true; // true和globe必须同时开发光照   
+    </script>
+    </div>
+</body>
+
+</html>

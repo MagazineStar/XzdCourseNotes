@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        const style = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: "green",
+                width: 3
+            }),
+            fill: new ol.style.Fill({
+                color: "#ff2d5166"
+            })
+        })
+        /* Tips:此种加载方式一定要以服务的方式开启 */
+        const source = new ol.source.Vector({
+            url: "./data/湖北省.json",
+            format: new ol.format.GeoJSON()
+        })
+        const layer = new ol.layer.Vector({
+            source,
+            // style
+        })
+        map.addLayer(layer);
+    </script>
+</body>
+
+</html>

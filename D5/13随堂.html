@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="addMarker()">添加标注</button>
+    <button onclick="removeMarker()">解绑事件/清除标注</button>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 设置一个空的图层 */
+        const icon_style = new ol.style.Style({
+            /**{olx.style.IconOptions}类型*/
+            image: new ol.style.Icon({
+                anchor: [0.5, 0.5],
+                anchorOrigin: 'top-right',
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                offsetOrigin: 'top-right',
+                // offset:[0,10],
+                //图标缩放比例
+                scale: 0.5,
+                //透明度
+                opacity: 0.75,
+                //图标的url
+                src: './images/location.png',
+            }),
+        })
+        var source = new ol.source.Vector({
+
+        })
+        var layer = new ol.layer.Vector({
+            source,
+            style: icon_style
+        })
+        map.addLayer(layer);
+
+        function addMarker() {
+            map.on("click", handleMap)
+        }
+        function handleMap(evt) {
+            var position = evt.coordinate;
+            var city = new ol.Feature({
+                geometry: new ol.geom.Point(position)
+            })
+            source.addFeature(city);
+        }
+
+        function removeMarker(){
+            source.clear();
+            map.un("click",handleMap)
+        }
+    </script>
+</body>
+
+</html>

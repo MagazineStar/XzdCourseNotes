@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* geojson就是带地理信息的json数据  key:value */
+        var point = {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [114.30, 30.50]
+                    },
+                    properties: {
+                        /* 只有properties属性中的key:value可以自定义 */
+                        id: 1001,
+                        name: "武汉"
+                    }
+                }
+            ]
+        }
+    </script>
+</body>
+
+</html>

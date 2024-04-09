@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="https://lib.baomitu.com/jquery/2.2.4/jquery.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #reset {
+            position: fixed;
+            width: 200px;
+            height: 40px;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="reset">复位地图</button>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        const view = map.getView();
+        const center = view.getCenter();
+        const zoom = view.getZoom();
+        map.on("click", (evt) => {
+            let center = evt.coordinate;
+            view.animate({
+                center,
+                zoom: 14
+            })
+        })
+        $("#reset").click(function () {
+            view.animate({
+                center,
+                zoom
+            })
+        })
+    </script>
+</body>
+
+</html>

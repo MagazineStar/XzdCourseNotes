@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="./utils/Query.js"></script>
+</head>
+
+<body>
+    <input type="text" id="search">
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "attr_city", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 1、需要获取搜索框中的数据 */
+        var search = document.getElementById("search");
+        search.onkeydown = function (evt) {
+            if (evt.keyCode == 13) {
+                console.log(this.value)
+                /* 2、调用属性查询接口获取数据 */
+                let  keyword = this.value;
+                let service = {
+                    name:"attr_city",
+                    layerId:0
+                }
+                Query.queryByAttr({
+                    keyword,
+                    service,
+                    callback:res=>{
+                        console.log(res);
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>

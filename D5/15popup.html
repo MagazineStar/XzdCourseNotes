@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <style>
+        .ol-popup {
+            position: absolute;
+            background-color: white;
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #cccccc;
+            bottom: 45px;
+            left: -50px;
+            z-index: 999;
+        }
+
+        .ol-popup:after,
+        .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: ' ';
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .ol-popup:after {
+            border-top-color: white;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+
+        .ol-popup:before {
+            border-top-color: #cccccc;
+            border-width: 11px;
+            left: 48px;
+            margin-left: -11px;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+        }
+
+        .ol-popup-closer:after {
+            content: '✖';
+        }
+
+        #popup-content {
+            font-size: 14px;
+            font-family: '微软雅黑';
+        }
+
+        #popup-content img {
+            width: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1、设置Popup弹窗的DOM及样式 -->
+    <div id="mapCon">
+        <!-- Popup -->
+        <div id="popup" class="ol-popup">
+            <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+            <div id="popup-content">
+                <h2>武汉</h2>
+                <img src="./images/location.png" />
+            </div>
+        </div>
+    </div>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+
+        /* 构建一个要素 */
+        /* 1、设置一个标注的样式 */
+        const icon_style = new ol.style.Style({
+            /**{olx.style.IconOptions}类型*/
+            image: new ol.style.Icon({
+                anchor: [0.5, 0.5],
+                anchorOrigin: 'top-right',
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                offsetOrigin: 'top-right',
+                // offset:[0,10],
+                //图标缩放比例
+                scale: 0.5,
+                //透明度
+                opacity: 0.75,
+                //图标的url
+                src: './images/location.png',
+            }),
+        })
+        var marker = new ol.Feature({
+            geometry: new ol.geom.Point([114.30, 30.50])
+        })
+        marker.setStyle(icon_style);
+        /* source-layer-map */
+        var source = new ol.source.Vector({
+            features: [marker]
+        })
+        var layer = new ol.layer.Vector({
+            source
+        })
+        map.addLayer(layer)
+        /* popup是用来解释地物的 */
+        /* 2、将DOM转化成overlayer */
+        // 二. 将dom转换成overlay
+        var container = document.getElementById('popup');
+        var content = document.getElementById('popup-content');
+        var closer = document.getElementById('popup-closer')
+        const popup = new ol.Overlay({
+            //要转换成overlay的HTML元素
+            element: container,
+            //当前窗口可见
+            autoPan: true,
+            //Popup放置的位置
+            positioning: 'bottom-center',
+            //是否应该停止事件传播到地图窗口
+            stopEvent: true,
+            autoPanAnimation: {
+                //当Popup超出地图边界时，为了Popup全部可见，地图移动的速度
+                duration: 250,
+            },
+        })
+        map.addOverlay(popup)
+        /* 3、执行事件监听 */
+
+        //为map添加鼠标移动事件监听,当鼠标移动到元素上的时候会显示手型
+        map.on('pointermove', function (e) {
+            var pixel = map.getEventPixel(e.originalEvent);
+            var hit = map.hasFeatureAtPixel(pixel);
+            map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        });
+        // 为map添加点击事件监听，渲染弹出popup
+        map.on('click', function (e) {
+            // 获取当前点击的点是否存在要素, 并返回
+            const feature = map.forEachFeatureAtPixel(
+                //
+                e.pixel,
+                function (feature, layer) {
+                    return feature
+                }
+            )
+            console.log(feature)
+            if (feature) {
+                if (popup.getPosition() == undefined) {
+                    var position = feature.getGeometry().flatCoordinates
+                    var pixel = map.getPixelFromCoordinate(position);
+                    console.log(pixel)
+                    popup.setPosition(position)
+                }
+            }
+        })
+        //添加关闭按钮的单击事件（隐藏popup）
+        closer.onclick = function () {
+            //未定义popup位置
+            popup.setPosition(undefined);
+            //失去焦点
+            closer.blur();
+            return false;
+        };
+    </script>
+</body>
+
+</html>

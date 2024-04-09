@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="singleAnalysis()">缓冲区分析-单圈</button>
+    <div id="map">
+    </div>
+    <script>
+        /* 矢量图层 */
+        var vectorData = 'gdbp://MapGISLocalPlus/xzd2301/sfcls/长江'
+        const vecLayer = new Zondy.Map.GdbpLayer(
+            '',
+            [vectorData], {
+            ip: 'localhost',
+            port: 6163
+        }
+        )
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, vecLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 实现缓冲区分析*/
+        /* 步骤 */
+        /*
+        1、调用中地接口创建缓冲区分析对象
+        2、设置分析对象
+        3、设置分析结果
+        4、执行分析 
+         */
+        let resultName = null; //分析结果
+        function singleAnalysis() {
+            /* 1、调用接口创建分析对象 */
+            var clsBufBySR = new Zondy.Service.ClassBufferBySingleRing({
+                ip: 'localhost',
+                port: '6163',
+                //经纬度坐标系下,缓冲区的半径单位为度
+                leftRad: 2,
+                rightRad: 2,
+                //不允许根据属性字段设置缓冲区半径
+                isByAtt: false,
+            })
+            /* 设置时间戳,希望分析结果是随机的图层 */
+            resultName = vectorData + Date.now()
+            //2、设置参数
+            //设置源图层
+            clsBufBySR.srcInfo = vectorData;
+            //设置分析结果图层
+            clsBufBySR.desInfo = resultName;
+            //3、 执行分析
+            clsBufBySR.execute(
+                onSuccess,
+                'post',
+                false,
+                'json'
+            )
+        }
+        function onSuccess(result) {
+            console.log(result)
+            if (result.succeed) {
+                const resultLayer = new Zondy.Map.GdbpLayer('', [resultName], {
+                    ip: 'localhost',
+                    port: 6163
+                })
+                map.addLayer(resultLayer)
+            }
+        }
+    </script>
+</body>
+
+</html>

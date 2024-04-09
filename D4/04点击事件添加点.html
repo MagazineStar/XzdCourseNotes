@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="clearFeature()">清除所有的点要素</button>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 创建一个空带样式的图层 */
+        var source = new ol.source.Vector({});
+        const style = new ol.style.Style({
+            image: new ol.style.Circle({
+                /* 半径 */
+                radius: 17,
+                /* fill属性是必选项 */
+                fill: new ol.style.Fill({
+                    color: "red"
+                }),
+                stroke: new ol.style.Stroke({
+                    width: 2,
+                    color: "#333"
+                })
+            })
+        })
+        var layer = new ol.layer.Vector({
+            source,
+            style
+        })
+        map.addLayer(layer);
+
+        map.on("click", evt => {
+            var position = evt.coordinate;
+            let point = new ol.Feature({
+                geometry: new ol.geom.Point(position)
+            })
+            // source.addFeatures([point]);
+            source.addFeature(point)
+        })
+        function clearFeature() {
+            /* 只是将source中所有的要素清空 */
+            source.clear()
+            /* 将图层的source给移除了 */
+            // layer.setSource(null);
+        }
+    </script>
+</body>
+
+</html>

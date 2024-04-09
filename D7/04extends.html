@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* class Person name,age  sayName */
+        class Person {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            sayName() {
+                console.log(this.name)
+            }
+        }
+
+        /* Student name,age,skill sayName,saySkill */
+        /* 凡是看到两段相同的代码,你应该感到恶心 */
+        /* 臃肿 */
+        // class Student {
+        //     constructor(name, age, skill) {
+        //         this.name = name;
+        //         this.age = age;
+        //         this.skill = skill;
+        //     }
+        //     sayName() {
+        //         console.log(this.name)
+        //     }
+        //     saySkill() {
+        //         console.log(this.skill)
+        //     }
+        // }
+        /* extends关键字 可以让子类继承父类 */
+        class Student extends Person {
+            //发生了什么
+
+        }
+        var s = new Student("高龙飞", 20);
+        console.log(s)
+    </script>
+</body>
+
+</html>

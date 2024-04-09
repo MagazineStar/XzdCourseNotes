@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*
+        类 --抽象  对一类事物的抽象  (电脑)
+        对象 --对象是一类事务的实例  (戴尔电脑)
+         */
+        /* 学生类 Student
+        1、name age
+        2、sayName
+         */
+        class Student {
+            /* 构建函数 - 就是构造一个对象的函数 */
+            constructor(name, age) {
+                console.log("con")
+                this.name = name;
+                this.age = age;
+            }
+            sayName() {
+                /* this指向new出来的实例对象 */
+                console.log(this);
+            }
+        }
+        let gao = new Student("高龙飞", 18);
+        console.log(gao);
+        gao.sayName();
+        /*
+        new这个关键字的作用
+        1、实例化了一个对象
+        2、调用了构造函数 
+         */
+    </script>
+</body>
+
+</html>

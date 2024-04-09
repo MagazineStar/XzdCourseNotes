@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+    <script src="./utils/delFeature.js"></script>
+</head>
+
+<body>
+    <button onclick="del()">删除线要素</button>
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "xzd_line", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        function del(){
+            var featureIds = [1]
+            var service = {
+                name:"xzd_line",
+                layerId:1
+            }
+            delFeature({
+                featureIds,
+                service,
+                docLayer
+            })
+        }
+    </script>
+</body>
+
+</html>

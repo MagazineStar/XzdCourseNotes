@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 1、导入ol -->
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+</head>
+
+<body>
+    <!-- 2、设置地图容器的挂载点 -->
+    <div id="map">
+
+    </div>
+    <script>
+        /* 3、调用中地接口获取mapgis中的数据 ajax*/
+        var docLayer = new Zondy.Map.Doc('', 'Area_Label', {
+            ip: 'localhost',
+            port: 6163
+        })
+        /* 4、实例化ol的地图 */
+        const map = new ol.Map({
+            target: "map",
+            layers: [docLayer],
+            /* 设置地图以什么的视角显示 center,zoom,projection */
+            view: new ol.View({
+                center: [114.30, 30.50],
+                zoom: 4,
+                projection: "EPSG:4326"
+            })
+        })
+    </script>
+</body>
+
+</html>

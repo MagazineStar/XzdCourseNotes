@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 设置多边形要素的几何信息 */
+        var Polygon = new ol.Feature({
+            geometry: new ol.geom.Polygon([[
+                [114.30, 30.50],
+                [116.30, 30.50],
+                [116.30, 24.50]
+            ]])
+        });
+        //设置区样式信息
+        Polygon.setStyle(new ol.style.Style({
+            //填充色
+            fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.5)'
+            }),
+            //边线颜色
+            stroke: new ol.style.Stroke({
+                color: '#ffcc33',
+                width: 2
+            })
+        }));
+
+        //实例化一个矢量图层Vector作为绘制层
+        var source = new ol.source.Vector({
+            features: [Polygon]
+        });
+        //创建一个图层
+        var vector = new ol.layer.Vector({
+            source: source
+        });
+        //将绘制层添加到地图容器中
+        map.addLayer(vector);
+    </script>
+</body>
+
+</html>

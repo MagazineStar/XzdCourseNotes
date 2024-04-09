@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="addLine()">添加线要素</button>
+    <div id="map">
+    </div>
+    <script>
+        /* ip默认参数是localhost port 6163 */
+        var docLayer = new Zondy.Map.Doc("", "xzd_line", {
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        function addLine() {
+            console.log("line")
+            /* 
+            1、创建线要素  new Zondy.Object.Feature({})
+            2、创建要素集添加要素  new Zondy.Object.FeatureSet()  addFeature
+            3、调用中地服务添加要素 new Zondy.Service.EditDocFeature  add
+             */
+            //几何
+            var pointObj = []
+            pointObj[0] = new Zondy.Object.Point2D(114.30, 30.50);
+            pointObj[1] = new Zondy.Object.Point2D(118, 30.50);
+            //构成折线的弧段
+            var gArc = new Zondy.Object.Arc(pointObj);
+            //构成线的折线
+            var gAnyLine = new Zondy.Object.AnyLine([gArc]);
+            //设置线要素的几何信息
+            var gline = new Zondy.Object.GLine(gAnyLine);
+            //设置要素的几何信息
+            var fGeom = new Zondy.Object.FeatureGeometry({ LinGeom: [gline] });
+            /* style 图形参数信息 */
+            //随机输出1~8之间的整数,作为新添加的要素的颜色号
+
+            //设置添加线要素的图形参数信息
+            var clineInfo = new Zondy.Object.CLineInfo({
+                "Color": 1,  //线颜色
+                "LinStyleID": 0,  //线型号
+                "LinStyleID2": 24, //线型号
+                "LinWidth": 0.05,//线宽
+                "Xscale": 10,
+                "Yscale": 10
+            });
+            //设置要素的图形参数信息
+            var graphicInfo = new Zondy.Object.WebGraphicsInfo({
+                /* 
+                1-Point
+                2-LineString
+                3-Area
+                 */
+                InfoType: 2,
+                LinInfo: clineInfo
+            });
+            /* 属性信息 */
+            var attValue = ['长江', 2000];
+
+            var newFeature = new Zondy.Object.Feature({
+                fGeom: fGeom,
+                GraphicInfo: graphicInfo,
+                AttValue: attValue
+            });
+            //设置要素为线要素
+            newFeature.setFType(2);
+
+            /* 2、设置要素集 */
+            //创建一个要素数据集
+            var featureSet = new Zondy.Object.FeatureSet();
+            var fldNumber = attValue.length; //属性个数
+            /* 默认参数不用映射 */
+            var fldName = ["name", "length"];
+            var fldType = ["string", "int"];
+            //创建属性结构设置对象
+            var cAttStruct = new Zondy.Object.CAttStruct({
+                FldName: fldName,
+                FldNumber: fldNumber,
+                FldType: fldType
+            });
+            //设置要素数据集的树形结构
+            featureSet.AttStruct = cAttStruct;
+            //将添加的线要素添加到属性数据集中
+            featureSet.addFeature(newFeature);
+            /* 3、调用服务 */
+
+            //创建一个地图编辑对象
+            /* 第一个参数  地图文档的名称 第二个参数 要素所在的图层 */
+            var editDocFeature = new Zondy.Service.EditDocFeature("xzd_line", 1, {
+
+            });
+            editDocFeature.add(featureSet, onLineSuccess);
+        }
+        //添加线要素回调函数
+        function onLineSuccess(rlt) {
+            var result = rlt;
+            if (result) {
+                alert("添加线要素成功！");
+                docLayer.refresh();
+            } else {
+                alert("添加线要素失败！");
+            }
+        }
+    </script>
+</body>
+
+</html>

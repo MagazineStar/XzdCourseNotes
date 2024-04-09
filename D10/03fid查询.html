@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "attr_city", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* oid fid  id 
+        fid=2
+        */
+        function queryByFID() {
+            var queryStruct = new Zondy.Service.QueryFeatureStruct();
+            //是否包含几何图形信息
+            queryStruct.IncludeGeometry = true;
+            //是否包含属性信息
+            queryStruct.IncludeAttribute = true;
+            //是否包含图形显示参数
+            queryStruct.IncludeWebGraphic = false;
+            //创建查询的OID编号
+            var objectIds = [1,2];
+            //var objectIds = "10,104,185,238";
+            //实例化查询参数对象
+            var queryParam = new Zondy.Service.QueryParameter({
+                objectIds: objectIds,
+                resultFormat: "json",
+                struct: queryStruct
+            });
+            queryParam.pageIndex = 0;
+            //设置查询要素数目
+            queryParam.recordNumber = 20;
+            //实例化地图文档查询服务对象
+            var queryService = new Zondy.Service.QueryDocFeature(queryParam, 'attr_city', 0, {
+
+            });
+            //执行查询操作，querySuccess为查询回调函数
+            queryService.query(querySuccess);
+        }
+        function querySuccess(res){
+            console.log(res);
+        }
+        queryByFID();
+    </script>
+</body>
+
+</html>

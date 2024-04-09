@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://lib.baomitu.com/jquery/2.2.4/jquery.js"></script>
+</head>
+
+<body>
+    <script>
+        /* 跨域 jsonp */
+        var key = 'QEQBZ-AB73Q-SI557-2ET4U-HGDCK-R4BHP'
+        var url = `https://apis.map.qq.com/ws/location/v1/ip?key=${key}&output=jsonp`
+        $.ajax({
+            url,
+            dataType: "jsonp",
+            success: res => {
+                console.log(res)
+            }
+        })
+    </script>
+</body>
+
+</html>

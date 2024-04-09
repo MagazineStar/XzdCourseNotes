@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "dir", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* exclude--隐藏  include--显示 */
+        /* 第一个参数  图层的下标 --和igserver一致 */
+        // docLayer.setLayerStatus('0,1','exclude')
+        const docCatalog = new Zondy.Catalog.MapDoc({
+            docName:"dir"
+        })
+        docCatalog.getLayersInfo(data=>{
+            var layer = data.value[1];
+            console.log(layer)
+            docLayer.setLayerStatus(layer.LayerIndex,'exclude')
+        })
+    </script>
+</body>
+
+</html>

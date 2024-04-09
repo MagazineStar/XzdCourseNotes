@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        class Person {
+            state = {
+                name: "李四"
+            }
+            sayName() {
+                /* 类中方法默认使用了严格模式 */
+                console.log(this);
+            }
+        }
+        var p = new Person();
+        p.sayName();
+        var fun = p.sayName.bind(p);
+        console.log(typeof fun)
+        // fun.call(p);
+        fun();
+    </script>
+</body>
+
+</html>

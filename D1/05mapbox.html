@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+    </style>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+</head>
+
+<body>
+    <div id='map' style='width:100vw; height:100vh;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiY2hlbmdiZW5jaGFvIiwiYSI6ImNsODU3aGRiODA0Y2UzcHBzZmFlcmdqZ2sifQ.8k59W_pB_Riwe6o-MneRlA';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            /* style  -- layers */
+            style: 'mapbox://styles/mapbox/streets-v11',
+            projection: "globe",
+            zoom: 1,
+            center: [114, 30]
+        });
+        map.on("style.load", () => {
+            map.setFog({})
+        })
+        map.on("click",()=>{
+            var layers = map.getStyle().layers;
+            console.log(layers)
+        })
+    </script>
+</body>
+
+</html>

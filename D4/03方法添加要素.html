@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        const point = new ol.Feature({
+            geometry: new ol.geom.Point([114.30, 30.50])
+        })
+        const style = new ol.style.Style({
+            image: new ol.style.Circle({
+                /* 半径 */
+                radius: 17,
+                /* fill属性是必选项 */
+                fill: new ol.style.Fill({
+                    color: "red"
+                }),
+                stroke: new ol.style.Stroke({
+                    width: 2,
+                    color: "#333"
+                })
+            })
+        })
+        const source = new ol.source.Vector({
+            // features:[point]
+        })
+        // console.log(source)
+        source.addFeatures([point]);
+        const layer = new ol.layer.Vector({
+            // source
+        })
+        layer.setSource(source);
+        layer.setStyle(style);
+        // console.log(layer)
+        map.addLayer(layer);
+    </script>
+</body>
+
+</html>

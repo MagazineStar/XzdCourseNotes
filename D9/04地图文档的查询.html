@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="queryPnt()">查询要素</button>
+    <div id="map">
+    </div>
+    <script>
+        var docLayer = new Zondy.Map.Doc("", "dir", {
+
+        })
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode, docLayer],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        /* 105.18  41.71  fid:1 */
+        function queryPnt() {
+            // debugger;
+            var pointObj = new Zondy.Object.Point2D(105.18, 41.71);
+            //设置查询点的搜索半径
+            pointObj.nearDis = 1;
+            //1、初始化查询结构对象，设置查询结构包含几何信息
+            var queryStruct = new Zondy.Service.QueryFeatureStruct();
+            //是否包含几何图形信息
+            queryStruct.IncludeGeometry = true;
+            //是否包含属性信息
+            queryStruct.IncludeAttribute = true;
+            //是否包含图形显示参数
+            queryStruct.IncludeWebGraphic = false;
+            //2、指定查询规则
+            var rule = new Zondy.Service.QueryFeatureRule({
+                //是否将要素的可见性计算在内
+                EnableDisplayCondition: false,
+                //是否完全包含
+                MustInside: false,
+                //是否仅比较要素的外包矩形
+                CompareRectOnly: false,
+                //是否相交
+                Intersect: true
+            });
+            //实例化查询参数对象
+            var queryParam = new Zondy.Service.QueryParameter({
+                geometry: pointObj,
+                resultFormat: "json",
+                struct: queryStruct,
+                rule: rule
+            });
+            //设置查询分页号
+            queryParam.pageIndex = 0;
+            //设置查询要素数目
+            queryParam.recordNumber = 20;
+
+            var queryService = new Zondy.Service.QueryDocFeature(queryParam,
+                "dir", 2, {
+
+            });
+            //执行查询操作，querySuccess为查询回调函数
+            queryService.query(querySuccess);
+        }
+        function querySuccess(result) {
+            console.log(result)
+            //初始化Zondy.Format.PolygonJSON类
+            var format = new Zondy.Format.PolygonJSON();
+            var ol_features = format.read(result);
+            console.log(ol_features)
+            /* 对这个要素实现高亮显示 */
+            var drawSource = new ol.source.Vector({
+                wrapX: false
+            });
+            drawSource.addFeatures(ol_features);
+            drawLayer = new ol.layer.Vector({
+                source: drawSource,
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 17,
+                        fill: new ol.style.Fill({
+                            color: '#ffcc33'
+                        })
+                    })
+                })
+            });
+
+            map.addLayer(drawLayer);
+        }
+    </script>
+</body>
+
+</html>

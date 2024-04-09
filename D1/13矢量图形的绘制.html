@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 1、导入依赖 -->
+    <link rel="stylesheet" href="https://lib.baomitu.com/leaflet/1.9.3/leaflet.css">
+    <script src="https://lib.baomitu.com/leaflet/1.9.3/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+
+    </div>
+    <script>
+        /* 实例化地图 */
+        const map = L.map("map").setView([30.50, 114.30], 13)
+        /* 加载mapbox的图层 */
+        var url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hlbmdiZW5jaGFvIiwiYSI6ImNsODU3aGRiODA0Y2UzcHBzZmFlcmdqZ2sifQ.8k59W_pB_Riwe6o-MneRlA'
+        var layer = L.tileLayer(url, {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        })
+        layer.addTo(map);
+        var style = {
+            color: "red",
+            radius: 300,
+            /* 设置透明度 */
+            fillOpacity: 0.6,
+            fillColor: "#652e80"
+        }
+        var point = L.circle([30.50, 114.30], style)
+        // console.log(point)
+        // point.addTo(map);
+        map.addLayer(point)
+        var line = L.polyline([[30.50, 114.30], [30, 120]], { color: "red" })
+        map.addLayer(line)
+
+        var polygon = L.polygon(
+            [
+                [30.50, 114.30],
+                [30.50,116],
+                [29,116],
+                [29,114.30]
+            ]
+        )
+        map.addLayer(polygon)
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="200" height="200"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let radius = 50;
+        let increase = true;
+        /*
+        radius>100  false
+        radius<50  true
+         */
+
+        function draw() {
+            /* 设置圆 */
+            /* 清除画布上的图形 */
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(100, 100, radius, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fillStyle = "#652e80";
+            ctx.fill();
+            if (radius >= 100) {
+                /* 如果半径大于100,不再放大 */
+                increase = false
+            } else if (radius < 50) {
+                /* 如果半径小于50,放大 */
+                increase = true;
+            }
+            if (increase) {
+                radius++
+            } else {
+                radius--;
+            }
+        }
+        setInterval(() => {
+            draw()
+        }, 20)
+    </script>
+</body>
+
+</html>

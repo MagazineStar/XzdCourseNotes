@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="topAnalysis()">拓扑相交分析</button>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 8
+            })
+        })
+        //1、设置比较图形
+        //1-1、准备第一个图形
+        const lineObj = new Zondy.Object.GLine(
+            new Zondy.Object.AnyLine([
+                new Zondy.Object.Arc([
+                    new Zondy.Object.Point2D(114.4, 30.6),
+                    new Zondy.Object.Point2D(114.45, 30.2)
+                ])
+            ])
+        )
+        //1-2、准备第二个比较图形
+        const regionObj = new Zondy.Object.GRegion([
+            new Zondy.Object.AnyLine([
+                new Zondy.Object.Arc([
+                    new Zondy.Object.Point2D(114.301586, 30.533613),
+                    new Zondy.Object.Point2D(114.301586, 30.396517),
+                    new Zondy.Object.Point2D(114.544453, 30.396517),
+                    new Zondy.Object.Point2D(114.444453, 30.533613),
+                    new Zondy.Object.Point2D(114.401586, 30.533613)
+                ])
+            ])
+        ])
+        //将点几何和区几何添加到地图进行显示（非必需，仅仅为了在地图上高亮显示图形）
+        var linePntArr = [];
+        var linPointArr = [];
+        for (var i = 0; i < lineObj.Line.Arcs[0].Dots.length; i++) {
+            linePntArr.push([lineObj.Line.Arcs[0].Dots[i].x, lineObj.Line.Arcs[0].Dots[i].y]);
+        }
+        for (var i = 0; i < regionObj.Rings[0].Arcs[0].Dots.length; i++) {
+            linPointArr.push([regionObj.Rings[0].Arcs[0].Dots[i].x, regionObj.Rings[0].Arcs[0].Dots[i].y]);
+        }
+        //创建要素1（线要素）
+        var feature1 = new ol.Feature({
+            geometry: new ol.geom.LineString(linePntArr)
+        });
+        //设置要素样式
+        feature1.setStyle(new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgba(41,57,85,1)',
+                width: 3
+            })
+        }));
+        //创建要素2（区要素）
+        var feature2 = new ol.Feature({
+            geometry: new ol.geom.Polygon([linPointArr])
+        });
+        //设置要素样式
+        feature2.setStyle(new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'rgba(22,197,199,0.5)'
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(22,197,199,0.5)',
+                width: 3
+            })
+        }));
+        //创建资源
+        var source = new ol.source.Vector({
+            features: [feature1, feature2],
+            warpX: false
+        });
+        var graphicLayer = new ol.layer.Vector({
+            source: source
+        });
+        map.addLayer(graphicLayer);
+        //2、调用分析服务
+        function topAnalysis() {
+            var topParam = new Zondy.Service.TopAnalysis({
+                ip: 'localhost',
+                port: '6163'
+            })
+            topParam.setLine(lineObj)
+            //调用setRelativeObj方法,设置拓扑分析参照物
+            topParam.setRelativeObj(regionObj);
+            topParam.nearDis = '0.05'
+            //3、执行分析，得到分结果
+            topParam.execute(onSuccess, onError)
+        }
+
+        function onSuccess(result) {
+            console.log(result)
+        }
+
+        function onError(err) {
+            console.log(err)
+        }
+    </script>
+</body>
+
+</html>

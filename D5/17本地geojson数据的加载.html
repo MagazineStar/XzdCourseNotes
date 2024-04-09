@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <script>
+        var map = new ol.Map({
+            target: "map",
+            layers: [gaode],
+            view: new ol.View({
+                projection: 'EPSG:4326',
+                center: [114.30, 30.50],
+                zoom: 4
+            })
+        })
+        var geojson = {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [114.30, 30.50]
+                    },
+                    properties: {
+                        name: "武汉"
+                    }
+                },
+                {
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [120, 40]
+                    },
+                    properties: {
+                        name: "北京"
+                    }
+                }
+            ]
+        }
+        const style = new ol.style.Style({
+            //形状
+            image: new ol.style.Circle({
+                radius: 17,
+                fill: new ol.style.Fill({
+                    color: '#33333380'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ff2d5163',
+                    width: 2
+                })
+            })
+        })
+        const source = new ol.source.Vector({
+            features: new ol.format.GeoJSON().readFeatures(geojson)
+        })
+        const layer = new ol.layer.Vector({
+            source,
+            style
+        })
+        map.addLayer(layer)
+
+
+        map.on('pointermove', function (e) {
+            var pixel = map.getEventPixel(e.originalEvent);
+            var hit = map.hasFeatureAtPixel(pixel);
+            map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        });
+
+        map.on('click', function (e) {
+            // 获取当前点击的点是否存在要素, 并返回
+            const feature = map.forEachFeatureAtPixel(
+                //
+                e.pixel,
+                function (feature, layer) {
+                    return feature
+                }
+            )
+            if (feature) {
+                console.log(feature.values_)
+                alert(feature.values_.name)
+            }
+        })
+        /* 设置一个高亮图层,将要素添加到高亮图层,保证每次点击高亮图层只有一个要素 */
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./OL_SDK/include-openlayers-local.js"></script>
+    <script src="./libs/gaode.js"></script>
+</head>
+
+<body>
+    <button onclick="topAnalysis()">拓扑分析</button>
+    <script>
+        /* 1-1、 创建比较对象一个点对象 */
+        const pointObj = new Zondy.Object.GPoint(114, 30)
+        /* 1-2、 创建参考对象*/
+        //创建几何对象
+        const regionObj = new Zondy.Object.GRegion([
+            new Zondy.Object.AnyLine([
+                new Zondy.Object.Arc([
+                    new Zondy.Object.Point2D(115, 40),
+                    new Zondy.Object.Point2D(115, 39),
+                    new Zondy.Object.Point2D(116, 39),
+                    new Zondy.Object.Point2D(116, 40),
+                    new Zondy.Object.Point2D(115, 40)
+                ])
+            ])
+        ])
+        /* 1-3、调用拓扑分析的服务 */
+        function topAnalysis() {
+            //初始化TopAnalysis类
+            var topParam = new Zondy.Service.TopAnalysis({
+                ip: 'localhost',
+                port: '6163'
+            })
+            //调用setPnt方法,设置点类型
+            topParam.setPnt(pointObj)
+            //调用setRelativeObj方法,设置拓扑分析参照物
+            topParam.setRelativeObj(regionObj)
+            //设置拓扑分析半径
+            topParam.nearDis = '0.05'
+            //执行拓扑分析，成功执行后返回执行结果,onSuccess为回调函数
+            topParam.execute(onSuccess, onError)
+        }
+        function onSuccess(res) {
+            console.log(res)
+        }
+        function onError(err) {
+            console.log(err)
+        }
+    </script>
+</body>
+
+</html>

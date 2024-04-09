@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* static关键字修饰的变量或者方法是类所拥有的,
+        实例不能使用
+         */
+        /* static中的this指类 */
+        class Person {
+            static url = "http"
+            static sayName() {
+                console.log(this.url)
+
+            }
+            static saySkill() {
+                this.sayName();
+                console.log("skill");
+            }
+        }
+        Person.sayName();
+    </script>
+</body>
+
+</html>

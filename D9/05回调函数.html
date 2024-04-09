@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /* 就将函数作为参数传递给另一个函数 */
+        function go(callback) {
+            let a = 10;
+            callback(a);
+            // return a;
+        }
+        go(res => {
+            console.log(res);
+        })
+        var fun = val => {
+            console.log(val);
+        }
+        go(fun);
+    </script>
+</body>
+
+</html>
